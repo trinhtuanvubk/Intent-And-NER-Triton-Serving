@@ -75,6 +75,7 @@ print(embedding_outputs)
 print([x.shape for x in embedding_sess.get_outputs()])
 # ['token_embeddings']
 
+print({k: v.cpu().numpy().shape for k, v in tensors.items()})
 
 # start = time.time()
 bert_embedding = embedding_sess.run(embedding_outputs, {k: v.cpu().numpy() for k, v in tensors.items()})[0]

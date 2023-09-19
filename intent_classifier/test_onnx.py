@@ -29,24 +29,21 @@ dummy_model_input = tokenizer(input_texts, padding='max_length', truncation=True
 input_ids = dummy_model_input['input_ids']
 attention_mask = dummy_model_input['attention_mask']
 
-# print(input_ids.shape)
-# print(attention_mask.shape)
-# print(onnxruntime.get_device())
 
 # run onnx session
 sess = onnxruntime.InferenceSession(onnx_model_path, providers=['CUDAExecutionProvider'] )
 input_name0 = sess.get_inputs()[0].name
 input_name1 = sess.get_inputs()[1].name
-
+print(input_name0, input_name1)
 # get output
 outputs = [x.name for x in sess.get_outputs()]
+print(outputs)
 
-start = time.time()
+
 logits = sess.run(outputs, 
             {input_name0: np.array(input_ids),
             input_name1: np.array(attention_mask)})[0]
-end = time.time() - start
-print(end)
+
 # get ids
 probabilities = softmax(logits, axis=1)
 predicted_ids = np.argmax(probabilities, axis=1)
